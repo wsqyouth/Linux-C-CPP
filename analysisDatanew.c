@@ -4,7 +4,7 @@
 /*
 This program can include two parts:
 1. the first two types put in array :recv_buf
-2. the last types can be copy a new malloc array :data
+2. the last types can be copy in a new malloc array :data
 we can analysis efficient data according to specific data form! 
 as follows:
 包头
@@ -63,7 +63,15 @@ int main()
 	packet_len    = *(u32*)(&recv_buf[2]);  //2-5
 	printf("包头: 0x%04x\r\n",packet_head);  //16进制数据，高位补零
 	printf("整包长度: 0x%08x\r\n",packet_len);
-	data =(u8*) malloc(sizeof(u8)*packet_len);
+	
+	//申请了内存空间后，必须检查是否分配成功。
+	if(NULL ==  (data=(u8*) malloc(sizeof(u8)*packet_len)) )
+	{
+		printf("error...");
+    	exit(1);
+	}
+	
+	
 	//模拟接收后面的数据 
 	memcpy(data,recv_buf+6,packet_len-6);//从第7个字符(V)开始复制，连续复制17-6个字符(View)
 	for(i=0; i< packet_len-6;i++)
@@ -90,6 +98,9 @@ int main()
 	printf("包尾: 0x%04x\r\n",packet_tail);
 	printf("--------------------------\r\n"); 
 	
+	//释放资源,避免野指针 
+	free(data); 
+	data = NULL;/*请加上这句*/
 	
 	system("pause");
 	return 0;
