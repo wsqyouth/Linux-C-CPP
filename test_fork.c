@@ -29,3 +29,9 @@ int  main(void)
 
     return 0;
 }
+
+------------------------------------
+output：
+I am the parent process,the value of pid is 11629
+I am the parent process,my process ID is 11628
+I am the child process, my process ID is 11629,my parent ID is 11628
