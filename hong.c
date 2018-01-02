@@ -42,5 +42,6 @@ C99标准对可变参数宏的支持： __VA_ARGS__
 int main()
 {
     DEBUG("hello %s\n","paopao");
+    DEBUG("value %d\n",1000);
     return 0;
 }
