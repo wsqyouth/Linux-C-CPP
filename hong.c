@@ -45,3 +45,25 @@ int main()
     DEBUG("value %d\n",1000);
     return 0;
 }
+
+----
+第三个版本：
+更简单方便
+
+#include <stdio.h>
+#include <string.h>
+
+#define __DEBUG
+
+#ifdef __DEBUG
+#define DEBUG(...)  printf(__VA_ARGS__)
+#else
+#define DEBUG(...)
+#endif
+
+int main()
+{
+    DEBUG("hello %s\n","paopao");
+    DEBUG("value %d\n",1000);
+    return 0;
+}
