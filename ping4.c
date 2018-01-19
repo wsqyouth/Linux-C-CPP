@@ -17,11 +17,11 @@ WSTOPSIG(status)取得引发子进程暂停的信号代码，一般会先用WIFS
 */ 
 int Ping(char* host) {
         int ret;
-        char cmd[35];
+        char cmd[64];
 
-        /* Safer than strcat: */
-        snprintf(cmd, sizeof(cmd), "ping -c 3 -w 1 %s", host);
-              
+        /* Safer than strcat: snprintf*/
+        snprintf(cmd, sizeof(cmd), "ping -c 3 -i 1 %s >/dev/null", host);
+        printf("%s\n",cmd); 
 		ret = system(cmd);
         if(WIFEXITED(ret))
                 return WEXITSTATUS(ret); //0 normal
@@ -39,7 +39,7 @@ int main()
 */
     
 
-	if(0==Ping("192.168.123.207"))
+	if(0==Ping("192.168.123.137"))
     {
 		printf("%s\n","is UP");
 	}else
