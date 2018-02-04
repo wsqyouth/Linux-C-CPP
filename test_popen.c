@@ -21,9 +21,11 @@ int main()
 		chars_read = fread( buf, sizeof(char), sizeof(buf),  read_fp);  //将刚刚FILE* read_fp的数据流读取到buf中 
 		if(chars_read >0)
 			printf("my output:\n%s\n",buf);
+	    
+	    	pclose( read_fp );    
 	}
 
-    pclose( read_fp );    
+    
    
     return 0;  
 }   
