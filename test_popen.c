@@ -27,24 +27,34 @@ int main()
    
     return 0;  
 }   
+
+将输出送往外部程序：
 --------
+#include <sys/types.h>    
+#include <unistd.h>    
+#include <stdlib.h>    
+#include <stdio.h>    
+#include <string.h>  
+  
+int main()    
+{    
+    FILE   *write_fp;    
+    char   buf[1024];   
+    int    chars_write;
+  
+    memset(buf, '\0', sizeof(buf) );//初始化buf,以免后面写如乱码到文件中
+	sprintf(buf,"hello world...\n");  
+    write_fp = popen( "od -c", "w" ); //通过管道（“w”参数）到FILE* stream  
+    if(write_fp != NULL)
+	{
+		fwrite( buf, sizeof(char), sizeof(buf),  write_fp);  //将刚刚FILE* write_fp的数据流读取到buf中 
+		pclose( write_fp );    
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   
+   
+    return 0;  
+}   
 
 popen返回值具体分析
 -------
