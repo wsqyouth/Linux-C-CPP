@@ -1,3 +1,6 @@
+参考：
+https://wiki.analog.com/resources/eval/user-guides/ad-fmcomms2-ebz/software/basic_iq_datafiles#binary_format
+----
 #本函数主要是对libiio的数据分解有一个清晰的认识，获取32位整型数据，分别获得其高16位、低16位
 最后对应得到相应的I、Q数据
 疑惑：究竟高16位是I数据吗？
@@ -51,8 +54,8 @@ void decompose(int32_t  buf[], int n)
          int32_t val = buf[j];
          char *p_dat=(char *)&val;
          const int16_t i = ((int16_t*)p_dat)[0]; // Real (I)
-	     const int16_t q = ((int16_t*)p_dat)[1]; // Imag (Q)
-	     printf("0x%.8X : %8d : %8d\n",val,i,q);
+	 const int16_t q = ((int16_t*)p_dat)[1]; // Imag (Q)
+	 printf("0x%.8X : %8d : %8d\n",val,i,q);
     }
 }
 int main (int argc , char* argv[])
