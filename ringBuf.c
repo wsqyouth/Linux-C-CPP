@@ -94,3 +94,81 @@ The consume done:98
 
 
 -----------------------------------
+
+ 该代码使用了&操作而不是%操作，并且后面可考虑溢出问题(unsigned int in.out)
+ 使用了信号量和互斥锁的方法，当有互斥锁时，写入和读取不能同时操作，这样互斥很安全，但符合功能需要吗
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdbool.h>
+#include <pthread.h>
+#include <semaphore.h>
+//https://www.cnblogs.com/rechen/p/5143841.html
+//https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-8%3A-Ring-Buffer-Example
+
+
+// N must be 2^i
+#define N (8)
+
+int b[N];
+
+int in = 0;
+int out = 0;
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+sem_t countsem,spacesem;
+
+void init() {
+  sem_init(&countsem,0,0);
+  sem_init(&spacesem,0,N);
+}
+
+void* thread_write(){
+    int value=0;
+while(1)
+    { 
+	 value++;
+	 if(value == N)
+		value = 0;
+	 // wait if there is no space left:
+	 sem_wait(&spacesem);
+	 
+	
+	 pthread_mutex_lock(&lock);
+	 b[(in++)&(N-1)] = value;
+	 pthread_mutex_unlock(&lock);
+	 printf("++++%d\n",value); 
+	 // increment the count of the number of items
+	 sem_post(&countsem);
+}
+}
+
+void *thread_read(){
+while(1)
+    {  
+
+  // Wait if there are no items in the buffer
+  sem_wait(&countsem);
+
+  pthread_mutex_lock(&lock);
+  int result = b[(out++) & (N-1)];
+  pthread_mutex_unlock(&lock);
+  printf("%d\n",result);
+  // Increment the count of the number of spaces
+  sem_post(&spacesem);
+}
+  //return result;
+}
+
+int main()
+{	
+init();
+	pthread_t wtid, rtid;  
+	pthread_create(&wtid, NULL, thread_write, NULL);  
+    pthread_create(&rtid, NULL, thread_read, NULL);  
+    pthread_exit(NULL);  
+	return 0;
+
+}
+
+
