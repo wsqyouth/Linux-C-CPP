@@ -94,7 +94,8 @@ The consume done:98
 
 
 -----------------------------------
-
+https://blog.csdn.net/m0_37956168/article/details/73136536
+https://blog.csdn.net/yyingc/article/details/73189139
  该代码使用了&操作而不是%操作，并且后面可考虑溢出问题(unsigned int in.out)
  使用了信号量和互斥锁的方法，当有互斥锁时，写入和读取不能同时操作，这样互斥很安全，但符合功能需要吗
 #include <stdio.h>
@@ -104,6 +105,8 @@ The consume done:98
 #include <stdbool.h>
 #include <pthread.h>
 #include <semaphore.h>
+
+//http://wdxtub.com/2016/04/16/thin-csapp-9/
 //https://www.cnblogs.com/rechen/p/5143841.html
 //https://github.com/angrave/SystemProgramming/wiki/Synchronization%2C-Part-8%3A-Ring-Buffer-Example
 
