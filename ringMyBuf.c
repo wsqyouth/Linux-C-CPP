@@ -92,3 +92,89 @@ init();
 	return 0;
 
 }
+
+
+
+-------
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdbool.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+// modify N must be 2^i:由于目前每个部分操作区域并不是2的整数次方，因此暂时使用取余的办法
+#define N (16416)  // tolal buffer size   4104*4=16416
+#define M (4104)  //every operate ara 6+4096+2=4104
+
+int b[N];
+
+int in = 0;
+int out = 0;
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+sem_t countsem,spacesem;
+
+void init() {
+  sem_init(&countsem,0,0);
+  sem_init(&spacesem,0,N/M);
+}
+
+void* thread_write(){
+    int value=0;
+while(1)
+    { 
+
+	 // wait if there is no space left:
+	 sem_wait(&spacesem);
+	 pthread_mutex_lock(&lock);
+     value++;
+	 for(int i=0;i<M;i++)
+	 {
+		//produce()操作(生产产品)
+        b[in] = value;
+        in = (in + 1) % N;
+	 }
+	 
+	 pthread_mutex_unlock(&lock);
+	 printf("++++%d at end %d\n",value,in); 
+	 // increment the count of the number of items
+	 sem_post(&countsem);
+	 //sleep(1); 
+}
+}
+
+void *thread_read(){
+	int result;
+while(1)
+    {  
+
+    // Wait if there are no items in the buffer
+    sem_wait(&countsem);
+
+    pthread_mutex_lock(&lock);
+	for(int i=0;i<M;i++)
+	{
+		result = b[out];		
+		//将取出缓冲区的指针偏移1（下个消费的位置）
+        out = (out + 1) % N;
+	}
+  		
+  pthread_mutex_unlock(&lock);
+  printf("%d at %d\n",result,out);
+  // Increment the count of the number of spaces
+  sem_post(&spacesem);
+  sleep(1); 
+}
+}
+
+int main()
+{	
+	init();
+	pthread_t wtid, rtid;  
+	pthread_create(&wtid, NULL, thread_write, NULL);  
+        pthread_create(&rtid, NULL, thread_read, NULL);  
+        pthread_exit(NULL);  
+	return 0;
+
+}
