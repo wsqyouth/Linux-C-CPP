@@ -85,6 +85,16 @@ int main(int argc, char * argv[]){
 https://blog.csdn.net/u010424605/article/details/42872189
 http://anzhsoft.iteye.com/blog/2031354
 
+
+永远在循环（loop）里调用 wait 和 notify，不是在 If 语句
+现在你知道wait应该永远在被synchronized的背景下和那个被多线程共享的对象上调用，
+下一个一定要记住的问题就是，你应该永远在while循环，而不是if语句中调用wait。
+因为线程是在某些条件下等待的——在我们的例子里，即“如果缓冲区队列是满的话，那么生产者线程应该等待”，
+你可能直觉就会写一个if语句。但if语句存在一些微妙的小问题，导致即使条件没被满足，你的线程你也有可能被错误地唤醒。
+所以如果你不在线程被唤醒后再次使用while循环检查唤醒条件是否被满足，你的程序就有可能会出错——
+例如在缓冲区为满的时候生产者继续生成数据，或者缓冲区为空的时候消费者开始小号数据。所以记住，永远在while循环而不是if语句中使用wait
+https://blog.csdn.net/u011863767/article/details/59731447
+-----
 #include <stdio.h>
 #include <pthread.h>
 #include <time.h>
@@ -107,7 +117,7 @@ void* produce(void *ptr){
     
     while(1){
         pthread_mutex_lock(&lock);
-        if((g_write_index + 1)% BUFF_SIZE  == g_read_index)  //
+        while((g_write_index + 1)% BUFF_SIZE  == g_read_index)  //
             pthread_cond_wait(&produce_cond, &lock);
 
         g_buff[g_write_index] = idx;
@@ -125,7 +135,7 @@ void* produce(void *ptr){
 void* consume(void *ptr){
     while(1){
         pthread_mutex_lock(&lock);
-        if(g_read_index == g_write_index)
+        while(g_read_index == g_write_index)
              pthread_cond_wait(&consume_cond, &lock);
 
         int data = g_buff[g_read_index];
