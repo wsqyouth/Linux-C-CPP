@@ -1,4 +1,5 @@
-
+参考自：
+https://blog.csdn.net/wangzhicheng1983/article/details/40261087
 //udp发送数据
 
 #include <stdio.h>
