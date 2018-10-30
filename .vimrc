@@ -189,7 +189,7 @@ endfunc
 map <F8> :call Rungdb()<CR>
 func! Rungdb()
     exec "w"
-    exec "!g++ % -g -o %<"
+    exec "!g++ -std=c++11 % -g -o %<"
     exec "!gdb ./%<"
 endfunc
   
