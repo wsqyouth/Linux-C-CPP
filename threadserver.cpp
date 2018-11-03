@@ -1,7 +1,7 @@
 
 //这是使用pthread进行并发服务器的第一个版本，优点是各个功能分离
 //使用pthread线程库
-//使用pthread线程库
+//使用joinable线程，设置join
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -50,10 +50,15 @@ void accept_conn(int listenfd)
         arg->connfd = connectfd;
         memcpy(&arg->client, &client, sizeof(client));
         
-		//创建线程，以客户端连接为参数，start_routine为线程执行函数
+	//创建线程，以客户端连接为参数，start_routine为线程执行函数
         if (pthread_create(&connectthread, NULL, start_routine, (void*)arg)) {        
             sys_err("Pthread_create() error");
         }
+	//another methond: blocking
+	if ( pthread_join (connectthread, NULL ) ) {
+		printf("error join thread.");
+		return;
+	 }
     }
 }
  
@@ -185,6 +190,20 @@ void sys_err(const char * ptr_err)
     exit(EXIT_FAILURE);
 }
 
+void display_data(uint8_t *buf ,uint16_t len){
+    if(buf){
+        int i;
+        printf("\n-----buf start------\n");
+        for(i=0;i<len;i++){
+        
+            printf(" %02x",buf[i]);
+        }
+        printf("\n-----end------\n");
+    }else{
+        printf("buf is null\n");
+    }
+}
+
 //处理客户端链接的接收工作
 void accept_conn(int listenfd)
 {
@@ -192,11 +211,12 @@ void accept_conn(int listenfd)
      pthread_t  connectthread;	   //线程体变量
 	 struct sockaddr_in cliaddr;     //客户端地址信息结构体
 
-	 pthread_attr_t attr;//线程状态信息
+	 
      CONNFD_THREADINFO thread[MAX_THREAD_NUM];//存储线程信息，用于函数指针传参
-	 pthread_attr_init(&attr);//初始化线程属性
-     /*设置为分离状态,也可以在线程处理函数中，用pthread_detach()进行分离状态设置，但是效率稍差*/
-     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	pthread_attr_t attr;//线程状态信息
+	pthread_attr_init(&attr);//初始化线程属性
+	/*设置为分离状态,也可以在线程处理函数中，用pthread_detach()进行分离状态设置，但是效率稍差*/
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	
      int sin_size = sizeof(struct sockaddr_in);
 	 int thread_index = 0; //线程池索引
@@ -215,12 +235,13 @@ void accept_conn(int listenfd)
         thread[thread_index].connfd = connectfd;
         thread[thread_index].cliaddr = cliaddr;
         
+		
 		//创建线程，以客户端连接为参数，deal_conn为线程执行函数);
-        if (pthread_create(&connectthread, NULL, deal_conn, (void*)&thread[thread_index])) {        
+        if (pthread_create(&connectthread, &attr, deal_conn, (void*)&thread[thread_index])) {        
             sys_err("Pthread_create() error");
         }
 		pthread_attr_destroy(&attr);//线程资源使用完后释放资源
-
+		
 		thread_index++;
         if(thread_index == MAX_THREAD_NUM){//超过线程总数限制，服务器主线程结束
             printf("Too many connect!\n");
@@ -236,20 +257,38 @@ void * deal_conn(void *arg)
 	sockaddr_in cliaddr = info->cliaddr;
 	
 	int num;
-    char recvbuf[MAXDATASIZE], sendbuf[MAXDATASIZE], cli_name[MAXDATASIZE];
-    
+    uint8_t recvbuf[MAXDATASIZE], sendbuf[MAXDATASIZE], cli_name[MAXDATASIZE];
+    unsigned int recv_size=6; //head + packetlen
+    unsigned int buf_pos = 0; //pos
     printf("You got a connection from %s:%d.\n",inet_ntoa(cliaddr.sin_addr) ,ntohs(cliaddr.sin_port));//客户端端口
-	 
-    while ((num = recv(connectfd, recvbuf, MAXDATASIZE,MSG_WAITALL)) > 0) {
- 		recvbuf[num] = '\0';
-        printf("Received size( %d ) message: %s\n",num, recvbuf);	
+	while ((num = recv(connectfd, recvbuf, MAXDATASIZE,0)) > 0) { //MSG_WAITALL
+		recvbuf[num] = '\0';
+		printf("recv num:%d\n",num);
+		display_data(recvbuf,num);
+		/*
+		if(recv_size == 6){
+		    if (!(recvbuf[0] == 0x7e && recvbuf[1] == 0x7e)){
+			    LOG(INFO)<<"接受前4字节数据错误，关闭socket" <<endl;
+			    break;
+		    }else {
+		    if(!(recvbuf[recv_size+4] == 0xa5 && recvbuf[recv_size+5] == 0xa5)) {
+			    LOG(INFO)<<"接受后半部数据错误，关闭socket" <<endl;
+				break;
+			}
+		}
+	    */
 	}
+
 
 	printf("Client disconnected.\n");
     close(connectfd); 
 	pthread_exit(NULL);
 
-	/* 
+	/*   
+     while ((num = recv(connectfd, recvbuf, MAXDATASIZE,MSG_WAITALL)) > 0) {
+ 		recvbuf[num] = '\0';
+        printf("Received size( %d ) message: %s\n",num, recvbuf);	
+	}
  	num = recv(connectfd, cli_name, MAXDATASIZE,0);
     if (num == 0) {
         close(connectfd);
@@ -317,6 +356,7 @@ int main()
 	tcp_server(port);
     
 }
+
 
 
 ------
