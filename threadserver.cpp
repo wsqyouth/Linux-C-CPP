@@ -1,6 +1,7 @@
 
 //这是使用pthread进行并发服务器的第一个版本，优点是各个功能分离
 //使用pthread线程库
+//使用pthread线程库
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -11,8 +12,8 @@
 #include<netinet/in.h>
 #include<arpa/inet.h>
 #include<pthread.h>
-#define PORT 6666           //服务器端口
-#define BACKLOG 5         //listen队列等待的连接数
+#define PORT 6666            //服务器端口
+#define BACKLOG 5            //listen队列等待的连接数
 #define MAXDATASIZE  1024    //缓冲区大小
  
 void process_cli(int connectfd, struct sockaddr_in client);    //客户端请求处理函数
@@ -55,7 +56,7 @@ void accept_conn(int listenfd)
         }
     }
 }
-//
+ 
 void tcp_server(uint16_t port)
 {
 	int listenfd;				   //socket描述符
@@ -106,11 +107,11 @@ void process_cli(int connectfd, sockaddr_in client)
     int num;
     char recvbuf[MAXDATASIZE], sendbuf[MAXDATASIZE], cli_name[MAXDATASIZE];
     
-    printf("You got a connection from %s.  ",inet_ntoa(client.sin_addr) );
-	 
-    while ((num = recv(connectfd, recvbuf, MAXDATASIZE,MSG_WAITALL)) > 0) {
+    printf("You got a connection from %s.  \n",inet_ntoa(client.sin_addr) );
+	//MSG_WAITALL 
+    while ((num = recv(connectfd, recvbuf, MAXDATASIZE,0)) > 0) {
  		recvbuf[num] = '\0';
-        printf("Received size( %d ) message: %s",num, recvbuf);	
+        printf("Received size( %d ) message: %s\n",num, recvbuf);	
 	}
    
     /* 
@@ -122,7 +123,6 @@ void process_cli(int connectfd, sockaddr_in client)
     }
     cli_name[num - 1] = '\0';
     printf("Client's content is: %s\n",cli_name);
-
     while (num = recv(connectfd, recvbuf, MAXDATASIZE,0)) {
         recvbuf[num] = '\0';
         printf("Received client( %s ) message: %s",cli_name, recvbuf);
@@ -138,13 +138,14 @@ void process_cli(int connectfd, sockaddr_in client)
 }
 void* start_routine(void* arg)
 {
-    ARG *info;
-    info = (ARG *)arg;
-    
+     
+    ARG *info = (ARG *)arg;
     process_cli(info->connfd, info->client);
-    delete info;
+	//删除对应的堆内存
+	delete info;
     pthread_exit(NULL);
 } 
+
 
 -----------------------
 参考：https://blog.csdn.net/Apollon_krj/article/details/58628733
