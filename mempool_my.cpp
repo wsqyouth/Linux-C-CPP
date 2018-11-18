@@ -5,6 +5,8 @@ https://blog.csdn.net/D_Guco/article/details/76312469
 https://blog.csdn.net/chexlong/article/details/7071922
 
 待完善：内存对齐问题，若mp是全局对象，内存合适被析构？ 是否采用大块内存问题
+代码出错：问题在维护的block表地址被修改了，free了非法地址
+
 */
 #include <iostream>
 #include <stdint.h>
@@ -68,11 +70,6 @@ void* MemPool::Alloc()
 		freeNodeHeader = (FreeNode*)malloc(nBlockSize);
 		freeNodeHeader->pNextBlock = NULL;
 
-		//第一个MemBlock
-		MemBlock* newBlock = (MemBlock*)malloc(sizeof(MemBlock));
-		newBlock->pFirstFreeNode = freeNodeHeader;
-		newBlock->pNext = NULL;
-
 		for (uint32_t i = 1; i < nBlockCount; ++i)
 		{
 			FreeNode* pNewFreeNode = NULL; //raw mem ptr
@@ -88,6 +85,11 @@ void* MemPool::Alloc()
 			pNewFreeNode->pNextBlock = freeNodeHeader->pNextBlock;
 			freeNodeHeader->pNextBlock = pNewFreeNode;
 		}
+		//第一个MemBlock
+		MemBlock* newBlock = (MemBlock*)malloc(sizeof(MemBlock));
+		newBlock->pFirstFreeNode = freeNodeHeader;
+		newBlock->pNext = NULL;
+
 		//首次申请内存块
 		if (memBlockHeader == NULL)
 		{
@@ -196,11 +198,7 @@ int main()
 
 		ActualClass* p2 = new ActualClass;
 		p2->print();
-		delete p1;
-
-		p1 = new ActualClass;
-		p1->print();
-
+		
 		ActualClass* p3 = new ActualClass;
 		p3->print();
 
