@@ -1,6 +1,7 @@
 这里提供两份代码：都是正确的，只是思想不一样。
 
 一份代码是：https://blog.csdn.net/D_Guco/article/details/76312469
+https://blog.csdn.net/chexlong/article/details/7071922
 该代码使用的new一个对象数组（连续内存）,因为他这里直接对一个T类型的对象分配内存，不必考虑传入指定数量的内存大小。
 优点：纵向扩展、内存单元使用双向链表连接、安全分配时扩展类、传统锁类封装。
 
