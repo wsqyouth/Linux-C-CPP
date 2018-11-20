@@ -6,7 +6,7 @@ https://blog.csdn.net/chexlong/article/details/7071922
 
 待完善：内存对齐问题，若mp是全局对象，内存合适被析构？ 是否采用大块内存问题
 代码出错：问题在维护的block表地址被修改了，free了非法地址
-
+初始想法：每个内存单元使用链表链接，但是由于free时内存单元的next指针修改，导致原来内存单元链接被断掉
 */
 #include <iostream>
 #include <stdint.h>
