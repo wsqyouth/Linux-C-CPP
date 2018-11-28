@@ -1,5 +1,8 @@
 参考文章：https://blog.csdn.net/tuwenqi2013/article/details/71772841，重要的是那个图
+优点：利用该博客和代码可以方便学习FFT，但效率不太高
+问题：W使用malloc却没有free，会不会内存泄漏？
 
+----
 #include <math.h>  
 #include <stdio.h>
 #include <stdlib.h>  
