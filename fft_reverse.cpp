@@ -85,18 +85,23 @@ void bitrp (int xreal [], int ximag [], int n)
 		}
 	}
 }
+
 //要求n必须为2的整数次幂
 //将/2的地方全部改为为运算
 void RaderReverse(int arr[],int n) {
 	int j,k;
 	//第一个和最后一个数坐标无变化，故不处理
 		for(int i=1,j=n>>1;i<n-1;++i) {
+	    cout << "原始坐标" << i << "倒序坐标" << j << endl;
 		//原始坐标小于变换坐标才交换
 		if( i<j) {
 			int temp = arr[j];
 			arr[j] = arr[i];
 			arr[i] = temp;
 		}
+		/*
+		k是一个基准，j是当前倒序数坐标，根据它和k的关系推导下一个倒序数坐标
+		*/
 		k = n>>1;//用于比较最高位
 		while(k <= j) { //位判断为1
 			j = j-k;//该位变为0
@@ -106,6 +111,7 @@ void RaderReverse(int arr[],int n) {
 	}
 		
 }
+
 int main() {
 	int xreal[]={0,1,2,3,4,5,6,7};
 	int ximag[]={0,0,0,0,0,0,0,0};
