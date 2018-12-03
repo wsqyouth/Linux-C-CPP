@@ -6,6 +6,7 @@ using namespace std;
 
 /*
  * 将数组的后半部分移动到前部分，前半部分移动到后半部分
+ * https://ww2.mathworks.cn/help/matlab/ref/fftshift.html 
  * 表示例:A={1,2,3,4,5}; B=fftshift(A)={4,5,1,2,3}; C=ifftshift(B) = {3,4,5,1,2}
  */
 
@@ -14,10 +15,21 @@ void printArr(int arr[],int n) {
 		cout << arr[i] << " ";
 	cout << endl;
 }
+
 /*
  * 将in数组shift之后放到out中
  *空间复杂度O(n),时间复杂度O(n)
  */
+void fftshiftInt(int *in, int *out, int dim)
+{
+    int pivot = ((dim&1) == 0) ? (dim / 2) : ((dim + 1) / 2); //dim % 2 == 0
+    int outIndex = 0;
+    for(int i=pivot;i<dim;++i)
+        out[outIndex++] = in[i];
+    for(int i=0;i<pivot;++i)
+         out[outIndex++] = in[i];
+}
+
 void fftshift1D(int *in,int* out, int dim)
 {
 	int pivot = ((dim&1) == 0) ? (dim/2):((dim+1)/2);
