@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -37,11 +38,13 @@ struct MetaParam {
 	string method;
 	string query_path;
 };
+
 // metaData根据meta透明传参获取对应server
 struct MetaData {
 	string server_name;
 	string server_method;
 };
+
 // 暂时作为rpc返回的结果结构体
 struct RpcData {
 	int id;
@@ -51,14 +54,14 @@ struct RpcData {
 ////////////////////////////////////////////////////////////////
 class ProxyBase {
 	public:
-	        ProxyBase(string auth_info, string input_data, unordered_map<string,string > cgi_server_conf_table);
+  ProxyBase(string auth_info, string input_data, unordered_map<string,string > cgi_server_conf_table);
 	~ProxyBase();
 	virtual string Validate(const string& auth_info) {
 		cout << "auth info: " << auth_info << endl;
 		return "";
 	}
 	protected:
-	        virtual int Process(const string& auth_info,const struct MetaParam& metaParam , const string& input_data);
+	virtual int Process(const string& auth_info,const struct MetaParam& metaParam , const string& input_data);
 	std::shared_ptr<RpcData> DoRPC(const string& auth_info, const struct MetaParam& metaParam , const string& input_data);
 	int Output(std::shared_ptr<RpcData> pData);
 	string m_auth_info;
@@ -72,9 +75,11 @@ ProxyBase::ProxyBase(string auth_info, string input_data,  unordered_map<string,
 	m_cgi_server_conf_table = cgi_server_conf_table;
 	cout << "parent constructor" << endl;
 }
+
 ProxyBase::~ProxyBase() {
 	cout << "parent destructor" << endl;
 }
+
 int ProxyBase::Process(const string& auth_info, const struct MetaParam& metaParam , const string& input_data) {
 	string key = metaParam.method + " " + metaParam.query_path ;
 	cout << key << endl;
@@ -118,7 +123,7 @@ int ProxyBase::Output(std::shared_ptr<RpcData> pData) {
 ////////////////////////////////////////////////////////////////
 class ChildProxy: public ProxyBase {
 	public:
-	    ChildProxy(string auth_info, string input_data, unordered_map<string,string> cgi_server_conf_table):ProxyBase(auth_info,input_data,cgi_server_conf_table) {
+    ChildProxy(string auth_info, string input_data, unordered_map<string,string> cgi_server_conf_table):ProxyBase(auth_info,input_data,cgi_server_conf_table) {
 		cout << "child constructor" << endl;
 	};
 	~ChildProxy() {
@@ -152,7 +157,6 @@ int main() {
 	return 0;
 }
 
-
 //--------------------------
 // 说明：
 // 最近在学习rpcProxy,看到原作者将虚继承和map用得出神入化，就抽离个demo进行学习，核心思路：
@@ -162,3 +166,4 @@ int main() {
 // 4. 可以使用json完成参数传递，这里为了不引人第三方库，写了简易的struct进行参数传递
 // 5. 这个代码可以再完善，总体思路就是配置文件通过构造函数传递，其他业务数据+meta数据传参
 // 命令：g++ rpc_proxy.cpp -std=c++11  && ./a.out
+// 代码格式化:http://www.jsons.cn/caddlanformat/
