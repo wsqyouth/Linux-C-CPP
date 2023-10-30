@@ -33,3 +33,8 @@ int FinalClass::BeforeProcess(Comm::Input *input, Comm::Output *output)
 
     return 0;
 }
+
+void FinalClass::doSomething()
+{
+    std::cout << "Doing something in FinalClass" << std::endl;
+}

@@ -20,7 +20,7 @@ class BaseClass
 public:
     BaseClass() {}
     virtual ~BaseClass() {}
-
+    virtual void doSomething() = 0; // 纯虚函数
 protected:
     virtual int BeforeProcess(Comm::Input *input, Comm::Output *output); // 基类需重载函数
     virtual void PrintHelloWorld();                                      // 普通函数

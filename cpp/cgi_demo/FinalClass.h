@@ -10,6 +10,7 @@ public:
     ~FinalClass();
 
     void Process(Comm::Input *input, Comm::Output *output);
+    void doSomething() override;
 
 protected:
     virtual int BeforeProcess(Comm::Input *input, Comm::Output *output) override;

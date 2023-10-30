@@ -10,6 +10,7 @@ public:
     IntermediateClass();
     virtual ~IntermediateClass();
 
+    void doSomething() override;
     int genTypeAndStr(const std::string &appid, uint32_t &adq_type, uint32_t &adq_uid);
     void InitCgiConfig(const uint32_t gdt_modid, const uint32_t gdt_cmdid, const std::string &gdt_key);
 

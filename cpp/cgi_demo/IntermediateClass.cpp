@@ -33,3 +33,8 @@ void IntermediateClass::PrintHelloWorld()
     BaseClass::PrintHelloWorld();
     std::cout << "Hello, World from IntermediateClass!" << std::endl;
 }
+
+void IntermediateClass::doSomething()
+{
+    std::cout << "Doing something in IntermediateClass" << std::endl;
+}
