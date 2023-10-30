@@ -3,8 +3,8 @@
 int main()
 {
     FinalClass fc;
-    Input input;
-    Output output;
+    Comm::Input input;
+    Comm::Output output;
     fc.Process(&input, &output);
     return 0;
 }

@@ -22,7 +22,7 @@ void SkeyCgi::InitCgiConfig(const uint32_t gdt_modid, const uint32_t gdt_cmdid, 
     m_gdt_key[sizeof(m_gdt_key) - 1] = '\0'; // Ensure null-termination
 }
 
-int SkeyCgi::BeforeProcess(Input *input, Output *output)
+int SkeyCgi::BeforeProcess(Comm::Input *input, Comm::Output *output)
 {
     std::cout << "SkeyCgi::BeforeProcess called" << std::endl;
     return 0;

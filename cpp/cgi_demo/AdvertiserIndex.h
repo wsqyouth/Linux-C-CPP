@@ -9,10 +9,10 @@ public:
     AdvertiserIndex();
     ~AdvertiserIndex();
 
-    void Process(Input *input, Output *output);
+    void Process(Comm::Input *input, Comm::Output *output);
 
 protected:
-    virtual int BeforeProcess(Input *input, Output *output) override;
+    virtual int BeforeProcess(Comm::Input *input, Comm::Output *output) override;
 };
 
 #endif // ADVERTISERINDEX_H

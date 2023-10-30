@@ -8,7 +8,7 @@ AdvertiserIndex::AdvertiserIndex()
 
 AdvertiserIndex::~AdvertiserIndex() {}
 
-void AdvertiserIndex::Process(Input *input, Output *output)
+void AdvertiserIndex::Process(Comm::Input *input, Comm::Output *output)
 {
     BeforeProcess(input, output);
 
@@ -20,7 +20,7 @@ void AdvertiserIndex::Process(Input *input, Output *output)
     PrintHelloWorld();
 }
 
-int AdvertiserIndex::BeforeProcess(Input *input, Output *output)
+int AdvertiserIndex::BeforeProcess(Comm::Input *input, Comm::Output *output)
 {
     int iRet = SkeyCgi::BeforeProcess(input, output);
 

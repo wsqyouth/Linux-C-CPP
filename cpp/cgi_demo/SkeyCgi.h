@@ -21,7 +21,7 @@ public:
     void InitCgiConfig(const uint32_t gdt_modid, const uint32_t gdt_cmdid, const std::string &gdt_key);
 
 protected:
-    virtual int BeforeProcess(Input *input, Output *output);
+    virtual int BeforeProcess(Comm::Input *input, Comm::Output *output);
     virtual void PrintHelloWorld() override;
 
 private:

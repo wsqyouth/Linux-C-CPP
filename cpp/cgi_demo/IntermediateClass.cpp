@@ -22,7 +22,7 @@ void IntermediateClass::InitCgiConfig(const uint32_t gdt_modid, const uint32_t g
     m_gdt_key[sizeof(m_gdt_key) - 1] = '\0'; // Ensure null-termination
 }
 
-int IntermediateClass::BeforeProcess(Input *input, Output *output)
+int IntermediateClass::BeforeProcess(Comm::Input *input, Comm::Output *output)
 {
     std::cout << "IntermediateClass::BeforeProcess called" << std::endl;
     return 0;

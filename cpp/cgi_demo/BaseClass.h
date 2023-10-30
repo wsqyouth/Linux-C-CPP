@@ -1,12 +1,19 @@
 #ifndef BASECLASS_H
 #define BASECLASS_H
 
-class Input
+// 声明命名空间和其中的类
+namespace Comm
 {
-};
-class Output
-{
-};
+    class Input
+    {
+        // Input的成员和方法
+    };
+
+    class Output
+    {
+        // Output的成员和方法
+    };
+}
 
 class BaseClass
 {
@@ -15,8 +22,8 @@ public:
     virtual ~BaseClass() {}
 
 protected:
-    virtual int BeforeProcess(Input *input, Output *output); // 基类需重载函数
-    virtual void PrintHelloWorld();                          // 普通函数
+    virtual int BeforeProcess(Comm::Input *input, Comm::Output *output); // 基类需重载函数
+    virtual void PrintHelloWorld();                                      // 普通函数
 };
 
 #endif // BASECLASS_H

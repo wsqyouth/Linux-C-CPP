@@ -8,7 +8,7 @@ FinalClass::FinalClass()
 
 FinalClass::~FinalClass() {}
 
-void FinalClass::Process(Input *input, Output *output)
+void FinalClass::Process(Comm::Input *input, Comm::Output *output)
 {
     BeforeProcess(input, output);
 
@@ -20,7 +20,7 @@ void FinalClass::Process(Input *input, Output *output)
     PrintHelloWorld();
 }
 
-int FinalClass::BeforeProcess(Input *input, Output *output)
+int FinalClass::BeforeProcess(Comm::Input *input, Comm::Output *output)
 {
     int iRet = IntermediateClass::BeforeProcess(input, output);
 
